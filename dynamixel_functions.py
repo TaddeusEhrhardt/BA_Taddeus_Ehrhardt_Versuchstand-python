@@ -26,6 +26,7 @@ def getch():
 ADDR_TORQUE_ENABLE          = 64
 ADDR_GOAL_POSITION          = 116
 ADDR_PRESENT_POSITION       = 132
+ADDR_VELOCITY_KP            = 84
 DXL_MINIMUM_POSITION_VALUE  = 10         # Refer to the Minimum Position Limit of product eManual
 DXL_MAXIMUM_POSITION_VALUE  = 4095      # Refer to the Maximum Position Limit of product eManual
 BAUDRATE                    = 57600
@@ -43,7 +44,7 @@ DEVICENAME                  = '/dev/ttyUSB0'
 
 TORQUE_ENABLE               = 1     # Value for enabling the torque
 TORQUE_DISABLE              = 0     # Value for disabling the torque
-DXL_MOVING_STATUS_THRESHOLD = 4    # Dynamixel moving status threshold
+DXL_MOVING_STATUS_THRESHOLD = 1    # Dynamixel moving status threshold
 
 dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE]         # Goal position
 
@@ -81,6 +82,16 @@ def init_port():
 def enable_torque():
     # Enable Dynamixel Torque
     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("Dynamixel has been successfully connected")
+
+def set_vel_p(vel_KP):
+    # set Dynamixel current
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_VELOCITY_KP, vel_KP)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
