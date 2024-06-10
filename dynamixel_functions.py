@@ -26,7 +26,13 @@ def getch():
 ADDR_TORQUE_ENABLE          = 64
 ADDR_GOAL_POSITION          = 116
 ADDR_PRESENT_POSITION       = 132
-ADDR_VELOCITY_KP            = 84
+ADDR_POS_P                  = 84
+ADDR_POS_I                  = 82
+ADDR_POS_D                  = 80
+ADDR_VEL_P                  = 78
+ADDR_VEL_I                  = 76
+ADDR_PROF_VEL               = 112
+
 DXL_MINIMUM_POSITION_VALUE  = 10         # Refer to the Minimum Position Limit of product eManual
 DXL_MAXIMUM_POSITION_VALUE  = 4095      # Refer to the Maximum Position Limit of product eManual
 BAUDRATE                    = 57600
@@ -78,10 +84,9 @@ def init_port():
         getch()
         quit()
 
-
 def enable_torque():
     # Enable Dynamixel Torque
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -89,15 +94,74 @@ def enable_torque():
     else:
         print("Dynamixel has been successfully connected")
 
-def set_vel_p(vel_KP):
-    # set Dynamixel current
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_VELOCITY_KP, vel_KP)
+
+def set_vel_P(vel_P):
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_VEL_P, vel_P)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
         print("Dynamixel has been successfully connected")
+
+
+def set_vel_I (vel_I):
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_VEL_I, vel_I)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("Dynamixel has been successfully connected")
+
+
+def set_pos_P (pos_P):
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_POS_P, pos_P)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("Dynamixel has been successfully connected")
+
+
+def set_pos_I(pos_I):
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_POS_I, pos_I)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("Dynamixel has been successfully connected")
+
+
+def set_pos_D (pos_D):
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_POS_D, pos_D)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("Dynamixel has been successfully connected")
+
+
+def set_vel_pos_pid(vP, vI, pP, pI, pD):
+    set_vel_P(vP)
+    set_vel_I(vI)
+
+    set_pos_P(pP)
+    set_pos_I(pI)
+    set_pos_D(pD)
+
+
+def set_profile_vel(profile_vel):
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_PROF_VEL, profile_vel)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    else:
+        print("Profile Velocity set")
 
 
 def simple_motor_test():
